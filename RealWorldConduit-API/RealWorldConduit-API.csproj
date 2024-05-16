@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>RealWorldConduit_API</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\RealWorldConduit-Application\RealWorldConduit-Application.csproj" />
+    <ProjectReference Include="..\RealWorldConduit-Infrastructure\RealWorldConduit-Infrastructure.csproj" />
+  </ItemGroup>
+
+</Project>
