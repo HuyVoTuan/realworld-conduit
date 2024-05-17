@@ -1,3 +1,4 @@
+using RealWorldConduit_API.HostedJob;
 using RealWorldConduit_Infrastructure.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,8 +10,15 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// Extension and DI
-builder.Services.DatabaseExtensionConfig(builder.Configuration);
+// Hosted Services
+builder.Services.AddHostedService<CreatePersonalUserJob>();
+
+// Extensions and DI
+builder.Services.BaseExtensionConfig()
+                .AuthExtensionConfig()
+                .QuartzExtensionConfig(builder.Configuration)
+                .DatabaseExtensionConfig(builder.Configuration);
+
 
 var app = builder.Build();
 

@@ -48,7 +48,6 @@
     <Folder Include="Integrations\" />
     <Folder Include="Middlewares\" />
     <Folder Include="Commons\" />
-    <Folder Include="Services\" />
   </ItemGroup>
 
 </Project>

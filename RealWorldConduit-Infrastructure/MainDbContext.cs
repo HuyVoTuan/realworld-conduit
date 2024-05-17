@@ -1,7 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AppAny.Quartz.EntityFrameworkCore.Migrations;
+using AppAny.Quartz.EntityFrameworkCore.Migrations.PostgreSQL;
+using Microsoft.EntityFrameworkCore;
 
 using RealWorldConduit_Domain.Commons;
 using RealWorldConduit_Domain.Entities;
+using RealWorldConduit_Infrastructure.Constants;
 
 namespace RealWorldConduit_Infrastructure
 {
@@ -22,6 +25,9 @@ namespace RealWorldConduit_Infrastructure
         {
             modelBuilder.HasPostgresExtension("pgcrypto").HasPostgresExtension("uuid-ossp");
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(MainDbContext).Assembly);
+
+            // Using AppAny.Quartz.EntityFrameworkCore.Postgres package to auto generate Quartz table
+            modelBuilder.AddQuartz(builder => builder.UsePostgreSql("qrtz_", DatabaseSchema.QuartzSchema));
             base.OnModelCreating(modelBuilder);
         }
 
