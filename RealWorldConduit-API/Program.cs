@@ -1,3 +1,5 @@
+using RealWorldConduit_Infrastructure.Extensions;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -6,6 +8,9 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+// Extension and DI
+builder.Services.DatabaseExtensionConfig(builder.Configuration);
 
 var app = builder.Build();
 
