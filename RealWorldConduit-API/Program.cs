@@ -15,7 +15,7 @@ builder.Services.AddHostedService<CreatePersonalUserJob>();
 
 // Extensions and DI
 builder.Services.BaseExtensionConfig()
-                .AuthExtensionConfig()
+                .AuthExtensionConfig(builder.Configuration)
                 .QuartzExtensionConfig(builder.Configuration)
                 .DatabaseExtensionConfig(builder.Configuration);
 

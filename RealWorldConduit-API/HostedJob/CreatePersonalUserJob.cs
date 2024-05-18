@@ -1,5 +1,4 @@
 ﻿
-using DotLiquid;
 using Microsoft.EntityFrameworkCore;
 using RealWorldConduit_Domain.Entities;
 using RealWorldConduit_Infrastructure;
@@ -41,7 +40,7 @@ namespace RealWorldConduit_API.HostedJob
 
                 if (existingUser is not null)
                 {
-                    _logger.LogInformation($"Personal user with email {_personalUserEmail} already exists.");
+                    _logger.LogInformation($"[JOB-{typeof(CreatePersonalUserJob).Name}] Personal user with email {_personalUserEmail} is already exists.");
                 }
                 else
                 {
