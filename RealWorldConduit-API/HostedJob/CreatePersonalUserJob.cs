@@ -1,5 +1,4 @@
-﻿
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using RealWorldConduit_Domain.Entities;
 using RealWorldConduit_Infrastructure;
 using RealWorldConduit_Infrastructure.Helpers;
@@ -13,8 +12,7 @@ namespace RealWorldConduit_API.HostedJob
         private readonly ILogger<CreatePersonalUserJob> _logger;
 
         private readonly string _personalUserEmail;
-        private readonly string _personalUserFirstName;
-        private readonly string _personalUserLastName;
+        private readonly string _personalUserUsername;
         private readonly string _personalUserPassword;
 
         public CreatePersonalUserJob(IServiceScopeFactory scopeFactory, ILogger<CreatePersonalUserJob> logger, IConfiguration configuration)
@@ -23,8 +21,7 @@ namespace RealWorldConduit_API.HostedJob
             _scopeFactory = scopeFactory;
 
             _personalUserEmail = configuration["PersonalUser:Email"];
-            _personalUserFirstName = configuration["PersonalUser:Firstname"];
-            _personalUserLastName = configuration["PersonalUser:Lastname"];
+            _personalUserUsername = configuration["PersonalUser:Username"];
             _personalUserPassword = configuration["PersonalUser:Password"];
         }
 
@@ -33,7 +30,7 @@ namespace RealWorldConduit_API.HostedJob
             using (var scope = _scopeFactory.CreateScope())
             {
                 var auth = scope.ServiceProvider.GetRequiredService<IAuthService>();
-                var dbContext = scope.ServiceProvider.GetRequiredService<MainDbContext>();
+                var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
                 var existingUser = await dbContext.Users.AsNoTracking()
                                                      .FirstOrDefaultAsync(u => u.Email == _personalUserEmail);
@@ -46,10 +43,9 @@ namespace RealWorldConduit_API.HostedJob
                 {
                     var newUser = new User
                     {
-                        Slug = StringHelper.GenerateSlug($"{_personalUserFirstName} {_personalUserLastName}"),
+                        Slug = StringHelper.GenerateSlug($"{_personalUserUsername}"),
                         Email = _personalUserEmail,
-                        Firstname = _personalUserFirstName,
-                        Lastname = _personalUserLastName,
+                        Username = _personalUserUsername,
                         Password = auth.HashPassword(_personalUserPassword)
                     };
 

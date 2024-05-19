@@ -1,15 +1,15 @@
 ﻿using AppAny.Quartz.EntityFrameworkCore.Migrations;
 using AppAny.Quartz.EntityFrameworkCore.Migrations.PostgreSQL;
 using Microsoft.EntityFrameworkCore;
-
 using RealWorldConduit_Domain.Commons;
 using RealWorldConduit_Domain.Entities;
 using RealWorldConduit_Infrastructure.Constants;
 
 namespace RealWorldConduit_Infrastructure
 {
-    public class MainDbContext : DbContext
+    public class ApplicationDbContext : DbContext
     {
+
         public DbSet<User> Users { get; set; }
         public DbSet<Location> Locations { get; set; }
         public DbSet<Friendship> Friendships { get; set; }
@@ -19,24 +19,21 @@ namespace RealWorldConduit_Infrastructure
         public DbSet<Comment> Comments { get; set; }
         public DbSet<BlogTag> BlogTags { get; set; }
 
-        public MainDbContext(DbContextOptions<MainDbContext> options) : base(options) { }
-
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
+        {
+        }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.HasPostgresExtension("pgcrypto").HasPostgresExtension("uuid-ossp");
-            modelBuilder.ApplyConfigurationsFromAssembly(typeof(MainDbContext).Assembly);
-
             // Using AppAny.Quartz.EntityFrameworkCore.Postgres package to auto generate Quartz table
             modelBuilder.AddQuartz(builder => builder.UsePostgreSql("qrtz_", DatabaseSchema.QuartzSchema));
-            base.OnModelCreating(modelBuilder);
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
         }
-
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
             AutomateAuditInfo();
             return base.SaveChangesAsync(cancellationToken);
         }
-
         private void AutomateAuditInfo()
         {
             var entries = ChangeTracker.Entries()

@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34902.65
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RealWorldConduit-API", "RealWorldConduit-API.csproj", "{F7616EA2-3B30-4DA6-8D27-84373552A8D7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RealWorldConduit-API", "RealWorldConduit-API.csproj", "{F7616EA2-3B30-4DA6-8D27-84373552A8D7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RealWorldConduit-Application", "..\RealWorldConduit-Application\RealWorldConduit-Application.csproj", "{170A4A96-1E02-4595-AD19-262F280A9576}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RealWorldConduit-Application", "..\RealWorldConduit-Application\RealWorldConduit-Application.csproj", "{170A4A96-1E02-4595-AD19-262F280A9576}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RealWorldConduit-Domain", "..\RealWorldConduit-Domain\RealWorldConduit-Domain.csproj", "{5530CF4C-028F-452C-92A3-CE3468813C9C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RealWorldConduit-Domain", "..\RealWorldConduit-Domain\RealWorldConduit-Domain.csproj", "{5530CF4C-028F-452C-92A3-CE3468813C9C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RealWorldConduit-Infrastructure", "..\RealWorldConduit-Infrastructure\RealWorldConduit-Infrastructure.csproj", "{BE69B76A-F723-4933-BFBB-BE54FCB53E06}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RealWorldConduit-Infrastructure", "..\RealWorldConduit-Infrastructure\RealWorldConduit-Infrastructure.csproj", "{BE69B76A-F723-4933-BFBB-BE54FCB53E06}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

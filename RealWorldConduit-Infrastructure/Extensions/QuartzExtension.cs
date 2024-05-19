@@ -18,7 +18,7 @@ namespace RealWorldConduit_Infrastructure.Extensions
                     _opt.UseClustering();
                     _opt.UsePostgres(config =>
                     {
-                        config.ConnectionString = configuration.GetConnectionString("MainDbContext");
+                        config.ConnectionString = configuration.GetConnectionString("ApplicationDbContext");
                     });
                     _opt.UseNewtonsoftJsonSerializer();
                 });

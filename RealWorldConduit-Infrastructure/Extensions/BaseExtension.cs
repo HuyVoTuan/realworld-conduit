@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace RealWorldConduit_Infrastructure.Extensions
 {
@@ -6,7 +7,11 @@ namespace RealWorldConduit_Infrastructure.Extensions
     {
         public static IServiceCollection BaseExtensionConfig(this IServiceCollection services)
         {
-            services.AddLogging();
+            services.AddLogging(builder =>
+            {
+                builder.AddConsole();
+            });
+            services.AddMemoryCache();
             return services;
         }
     }

@@ -8,7 +8,7 @@ namespace RealWorldConduit_Infrastructure.Extensions
     {
         public static IServiceCollection DatabaseExtensionConfig(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddDbContext<MainDbContext>(opt => opt.UseNpgsql(configuration.GetConnectionString("MainDbContext")));
+            services.AddDbContext<ApplicationDbContext>(opt => opt.UseNpgsql(configuration.GetConnectionString("ApplicationDbContext")));
             return services;
         }
     }

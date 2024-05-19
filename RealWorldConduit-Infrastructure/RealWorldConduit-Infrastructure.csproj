@@ -8,13 +8,23 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Localization\Resources\en-US.json" />
+    <None Remove="Localization\Resources\vi-VN.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Localization\Resources\en-US.json" />
+    <EmbeddedResource Include="Localization\Resources\vi-VN.json" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AppAny.Quartz.EntityFrameworkCore.Migrations.PostgreSQL" Version="0.5.1" />
     <PackageReference Include="BCrypt.Net-Core" Version="1.6.0" />
     <PackageReference Include="BouncyCastle.Cryptography" Version="2.3.1" />
     <PackageReference Include="DotLiquid" Version="2.2.692" />
     <PackageReference Include="FluentValidation" Version="11.9.1" />
     <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />
-    <PackageReference Include="MailKit" Version="4.5.0" />
+    <PackageReference Include="MailKit" Version="4.6.0" />
     <PackageReference Include="MediatR" Version="12.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.5" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.5" />
@@ -25,8 +35,9 @@
     <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="8.0.5" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
     <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="7.5.2" />
-    <PackageReference Include="MimeKit" Version="4.5.0" />
+    <PackageReference Include="MimeKit" Version="4.6.0" />
     <PackageReference Include="Nanoid" Version="3.0.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.4" />
     <PackageReference Include="Quartz" Version="3.9.0" />
     <PackageReference Include="Quartz.Extensions.DependencyInjection" Version="3.9.0" />
@@ -39,15 +50,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\RealWorldConduit-Domain\RealWorldConduit-Domain.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Behaviors\" />
-    <Folder Include="Localization\" />
-    <Folder Include="LINQ\" />
-    <Folder Include="Integrations\" />
-    <Folder Include="Middlewares\" />
-    <Folder Include="Commons\" />
   </ItemGroup>
 
 </Project>

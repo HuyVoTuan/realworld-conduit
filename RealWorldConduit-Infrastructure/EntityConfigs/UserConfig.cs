@@ -17,8 +17,7 @@ namespace RealWorldConduit_Infrastructure.EntityConfigs
             builder.HasIndex(x => x.Email).IsUnique();
 
             builder.Property(x => x.Slug).IsRequired();
-            builder.Property(x => x.Firstname).IsRequired();
-            builder.Property(x => x.Lastname).IsRequired();
+            builder.Property(x => x.Username).IsRequired();
             builder.Property(x => x.Email).IsRequired();
             builder.Property(x => x.Password).IsRequired();
         }

@@ -11,4 +11,10 @@
     <ProjectReference Include="..\RealWorldConduit-Infrastructure\RealWorldConduit-Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="User\Commands\" />
+    <Folder Include="User\DTOs\" />
+    <Folder Include="User\Queries\" />
+  </ItemGroup>
+
 </Project>
