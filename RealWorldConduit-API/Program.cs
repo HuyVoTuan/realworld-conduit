@@ -57,7 +57,7 @@ builder.Services.BaseExtensionConfig()
                 .RedisExtensionConfig(builder.Configuration)
                 .QuartzExtensionConfig(builder.Configuration)
                 .DatabaseExtensionConfig(builder.Configuration)
-                .LocalizerExtensionConfig(builder.Configuration)        
+                .LocalizerExtensionConfig(builder.Configuration)
                 .AddExceptionHandler<RestfulAPIExceptionMiddleware>();
 
 

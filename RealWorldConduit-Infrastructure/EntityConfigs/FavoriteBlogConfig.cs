@@ -11,7 +11,7 @@ namespace RealWorldConduit_Infrastructure.EntityConfigs
         {
             builder.ToTable(nameof(FavoriteBlog), DatabaseSchema.BlogSchema);
 
-            builder.HasKey(fb => new { fb.UserId, fb.BlogId });
+            builder.HasKey(x => new { x.UserId, x.BlogId });
 
             builder.HasOne(fb => fb.User)
                    .WithMany(u => u.FavoriteBlogs)

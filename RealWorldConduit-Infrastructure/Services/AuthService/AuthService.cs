@@ -42,6 +42,7 @@ namespace RealWorldConduit_Infrastructure.Services.Auth
                 Subject = new ClaimsIdentity(new Claim[]
                 {
                     new Claim(ClaimTypes.NameIdentifier, $"{user.Id}"),
+                    new Claim(ClaimTypes.Email, $"{user.Email}"),
                 }),
                 Expires = DateTime.UtcNow.AddMinutes(ACCESS_TOKEN_LIFE_TIME),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha512)

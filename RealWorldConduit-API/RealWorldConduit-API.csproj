@@ -20,8 +20,4 @@
     <ProjectReference Include="..\RealWorldConduit-Infrastructure\RealWorldConduit-Infrastructure.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Controllers\" />
-  </ItemGroup>
-
 </Project>

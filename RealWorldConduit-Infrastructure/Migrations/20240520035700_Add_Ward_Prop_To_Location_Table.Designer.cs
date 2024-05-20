@@ -12,8 +12,8 @@ using RealWorldConduit_Infrastructure;
 namespace RealWorldConduit_Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240519165140_Initialize_Database")]
-    partial class Initialize_Database
+    [Migration("20240520035700_Add_Ward_Prop_To_Location_Table")]
+    partial class Add_Ward_Prop_To_Location_Table
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -627,15 +627,26 @@ namespace RealWorldConduit_Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("Slug")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<DateTime>("UpdatedDate")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uuid");
 
+                    b.Property<string>("Ward")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("City");
+                    b.HasIndex("Address");
+
+                    b.HasIndex("Slug")
+                        .IsUnique();
 
                     b.HasIndex("UserId");
 

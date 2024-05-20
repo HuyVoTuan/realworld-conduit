@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -543,6 +542,12 @@ namespace RealWorldConduit_Infrastructure.Migrations
                 schema: "user",
                 table: "Friendship",
                 column: "FollowerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Location_Address",
+                schema: "user",
+                table: "Location",
+                column: "Address");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Location_City",

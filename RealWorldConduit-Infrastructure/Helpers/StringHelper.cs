@@ -1,11 +1,37 @@
 ﻿using NanoidDotNet;
 using Slugify;
+using System.Text.RegularExpressions;
 
 namespace RealWorldConduit_Infrastructure.Helpers
 {
     public static class StringHelper
     {
         private static readonly string CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+        public static bool IsValidString(String value)
+        {
+            // Regular expression to match only letters and whitespace
+            Regex regex = new Regex("^[a-zA-Z\\s]*$");
+            return regex.IsMatch(value);
+        }
+
+        public static bool IsSlugContainFullname(String requestSlug, String existingMemberSlug)
+        {
+            var processedRequestSlug = requestSlug.Split("-");
+            var processedExistingMemberSlug = existingMemberSlug.Split("-");
+
+            if (processedRequestSlug.Length != processedExistingMemberSlug.Length)
+                return false;
+
+            for (int i = 0; i < processedRequestSlug.Length - 1; i++)
+            {
+                if (!processedRequestSlug[i].Equals(processedExistingMemberSlug[i], StringComparison.OrdinalIgnoreCase))
+                    return false;
+            }
+
+            return true;
+        }
+
         public static String GenerateSlug(string memberName)
         {
             var uniqueId = Nanoid.Generate(CHARS, size: 10);

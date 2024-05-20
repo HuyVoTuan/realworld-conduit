@@ -11,7 +11,7 @@ namespace RealWorldConduit_Infrastructure.EntityConfigs
         {
             builder.ToTable(nameof(BlogTag), DatabaseSchema.BlogSchema);
 
-            builder.HasKey(bl => new { bl.BlogId, bl.TagId });
+            builder.HasKey(x => new { x.BlogId, x.TagId });
 
             builder.HasOne(bl => bl.Blog)
                    .WithMany(b => b.BlogTags)

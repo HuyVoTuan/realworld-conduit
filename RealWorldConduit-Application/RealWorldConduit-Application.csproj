@@ -12,9 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="User\Commands\" />
-    <Folder Include="User\DTOs\" />
-    <Folder Include="User\Queries\" />
+    <None Include="Users\Commands\UserRegisterCommand.cs~RF19173d7c.TMP" />
   </ItemGroup>
 
 </Project>

@@ -13,10 +13,13 @@ namespace RealWorldConduit_Infrastructure.EntityConfigs
 
             builder.HasKey(x => x.Id);
 
-            builder.HasIndex(x => x.City);
+            builder.HasIndex(x => x.Address);
+            builder.HasIndex(x => x.Slug).IsUnique();
 
+            builder.Property(x => x.Slug).IsRequired();
             builder.Property(x => x.Address).IsRequired();
             builder.Property(x => x.District).IsRequired();
+            builder.Property(x => x.Ward).IsRequired();
             builder.Property(x => x.City).IsRequired();
 
             builder.HasOne(l => l.User)
