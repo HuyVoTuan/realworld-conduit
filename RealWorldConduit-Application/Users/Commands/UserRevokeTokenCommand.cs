@@ -19,14 +19,14 @@ namespace RealWorldConduit_Application.Users.Commands
             _currentUser = currentUser;
         }
 
-        public async Task<BaseResponseDTO> Handle(UserRevokeTokenCommand request, CancellationToken cancellationToken)
+        public async Task<BaseResponse> Handle(UserRevokeTokenCommand request, CancellationToken cancellationToken)
         {
             var refreshTokenLists = await _dbContext.RefreshTokens.Where(x => x.UserId == _currentUser.Id).ToListAsync(cancellationToken);
 
             _dbContext.RefreshTokens.RemoveRange(refreshTokenLists);
             await _dbContext.SaveChangesAsync(cancellationToken);
 
-            return new BaseResponseDTO(HttpStatusCode.NoContent);
+            return new BaseResponse(HttpStatusCode.NoContent);
         }
     }
 }

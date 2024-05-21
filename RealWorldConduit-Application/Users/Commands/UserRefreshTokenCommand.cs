@@ -48,7 +48,7 @@ namespace RealWorldConduit_Application.Users.Commands
             _cacheService = cacheService;
             _localizer = localizer;
         }
-        public async Task<BaseResponseDTO<AuthResponseDTO>> Handle(UserRefreshTokenCommand request, CancellationToken cancellationToken)
+        public async Task<BaseResponse<AuthResponseDTO>> Handle(UserRefreshTokenCommand request, CancellationToken cancellationToken)
         {
 
             var oldRefreshToken = await _dbContext.RefreshTokens.Include(x => x.User)
@@ -82,7 +82,7 @@ namespace RealWorldConduit_Application.Users.Commands
 
             await _dbContext.SaveChangesAsync(cancellationToken);
 
-            return new BaseResponseDTO<AuthResponseDTO>
+            return new BaseResponse<AuthResponseDTO>
             {
                 Code = HttpStatusCode.OK,
                 Message = _localizer.Translate("successfully.refresh-user-token"),
@@ -90,7 +90,7 @@ namespace RealWorldConduit_Application.Users.Commands
             };
         }
 
-        private BaseResponseDTO<AuthResponseDTO> CachedRefreshTokenHandler(string refreshToken)
+        private BaseResponse<AuthResponseDTO> CachedRefreshTokenHandler(string refreshToken)
         {
             var cachedRefreshToken = _cacheService.GetData<AuthResponseDTO>($"refreshTokenResponse-{refreshToken}");
 
@@ -99,7 +99,7 @@ namespace RealWorldConduit_Application.Users.Commands
                 throw new RestfulAPIException(HttpStatusCode.Unauthorized);
             }
 
-            return new BaseResponseDTO<AuthResponseDTO>
+            return new BaseResponse<AuthResponseDTO>
             {
                 Code = HttpStatusCode.OK,
                 Message = _localizer.Translate("successfully.retrieve"),

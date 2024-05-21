@@ -23,7 +23,7 @@ namespace RealWorldConduit_Application.Users.Queries
             _dbContext = dbContext;
             _currentUserService = currentUserService;
         }
-        public async Task<BaseResponseDTO<UserDTO>> Handle(GetCurrentUserQuery request, CancellationToken cancellationToken)
+        public async Task<BaseResponse<UserDTO>> Handle(GetCurrentUserQuery request, CancellationToken cancellationToken)
         {
             var currentUser = await _dbContext.Users.AsNoTracking()
                                                     .Include(x => x.Locations)
@@ -47,7 +47,7 @@ namespace RealWorldConduit_Application.Users.Queries
                 })
             };
 
-            return new BaseResponseDTO<UserDTO>
+            return new BaseResponse<UserDTO>
             {
                 Code = HttpStatusCode.OK,
                 Message = _localizer.Translate("successful.retrieve", new List<string> { _localizer.Translate("user") }),

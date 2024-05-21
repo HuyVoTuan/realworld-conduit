@@ -2,36 +2,36 @@
 
 namespace RealWorldConduit_Infrastructure.Commons.Base
 {
-    public class BaseResponseDTO<T>
+    public class BaseResponse<T>
     {
         public HttpStatusCode Code { get; set; }
         public string Message { get; set; }
         public T Data { get; set; }
 
         // Base constructor
-        public BaseResponseDTO()
+        public BaseResponse()
         {
         }
 
         // Data return only constructor
-        public BaseResponseDTO(T data)
+        public BaseResponse(T data)
         {
             Data = data;
         }
     }
 
-    public class BaseResponseDTO
+    public class BaseResponse
     {
         public HttpStatusCode Code { get; set; }
         public string Message { get; set; }
 
         // Base constructor
-        public BaseResponseDTO()
+        public BaseResponse()
         {
         }
 
         // HttpStatusCode return only constructor
-        public BaseResponseDTO(HttpStatusCode code)
+        public BaseResponse(HttpStatusCode code)
         {
             Code = code;
         }

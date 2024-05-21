@@ -1,17 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
-using RealWorldConduit_Application.Users.DTOs;
 using RealWorldConduit_Infrastructure;
 using RealWorldConduit_Infrastructure.Commons;
 using RealWorldConduit_Infrastructure.Commons.Base;
 using RealWorldConduit_Infrastructure.Extensions;
 using RealWorldConduit_Infrastructure.Services.Auth;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RealWorldConduit_Application.Users.Commands
 {
@@ -29,7 +23,7 @@ namespace RealWorldConduit_Application.Users.Commands
             _localizer = localizer;
             _currentUser = currentUser;
         }
-        public async Task<BaseResponseDTO> Handle(UserDeleteLocationCommand request, CancellationToken cancellationToken)
+        public async Task<BaseResponse> Handle(UserDeleteLocationCommand request, CancellationToken cancellationToken)
         {
             var existingUserLocation = await _dbContext.Locations.FirstOrDefaultAsync(x => x.Slug == request.Slug && x.UserId == _currentUser.Id, cancellationToken);
 
@@ -41,7 +35,7 @@ namespace RealWorldConduit_Application.Users.Commands
             _dbContext.Locations.Remove(existingUserLocation);
             await _dbContext.SaveChangesAsync(cancellationToken);
 
-            return new BaseResponseDTO(HttpStatusCode.NoContent);
+            return new BaseResponse(HttpStatusCode.NoContent);
         }
     }
 }

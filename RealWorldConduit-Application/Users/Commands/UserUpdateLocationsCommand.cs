@@ -73,7 +73,7 @@ namespace RealWorldConduit_Application.Users.Commands
             _localizer = localizer;
             _currentUser = currentUser;
         }
-        public async Task<BaseResponseDTO<LocationDTO>> Handle(UserUpdateLocationsCommand request, CancellationToken cancellationToken)
+        public async Task<BaseResponse<LocationDTO>> Handle(UserUpdateLocationsCommand request, CancellationToken cancellationToken)
         {
             var slug = StringHelper.GenerateSlug($"{request.Address} {request.District} {request.City}");
 
@@ -109,7 +109,7 @@ namespace RealWorldConduit_Application.Users.Commands
                 City = existingUserLocation.City,
             };
 
-            return new BaseResponseDTO<LocationDTO>
+            return new BaseResponse<LocationDTO>
             {
                 Code = HttpStatusCode.OK,
                 Message = _localizer.Translate("successful.update", new List<String> { "user" }),

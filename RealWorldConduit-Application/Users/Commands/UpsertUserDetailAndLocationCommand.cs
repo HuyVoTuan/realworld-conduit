@@ -95,7 +95,7 @@ namespace RealWorldConduit_Application.Users.Commands
             _currentUserService = currentUserService;
         }
 
-        public async Task<BaseResponseDTO<UserDTO>> Handle(UpsertUserDetailAndLocationCommand request, CancellationToken cancellationToken)
+        public async Task<BaseResponse<UserDTO>> Handle(UpsertUserDetailAndLocationCommand request, CancellationToken cancellationToken)
         {
             var slug = StringHelper.GenerateSlug(request.Username);
 
@@ -172,7 +172,7 @@ namespace RealWorldConduit_Application.Users.Commands
                 })
             };
 
-            return new BaseResponseDTO<UserDTO>
+            return new BaseResponse<UserDTO>
             {
                 Code = HttpStatusCode.OK,
                 Message = _localizer.Translate("successful.update", new List<String> { "user" }),

@@ -21,21 +21,43 @@ namespace RealWorldConduit_API.Controllers
 
         [Authorize]
         [HttpGet("/api/user")]
-        public async Task<IActionResult> GetCurrentMember([FromQuery] GetCurrentUserQuery request, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetCurrentUser([FromBody] GetCurrentUserQuery request, CancellationToken cancellationToken)
         {
             var getCurrentUserResult = await _mediator.Send(request, cancellationToken);
-            return new CustomActionResult<BaseResponseDTO<UserDTO>>
+            return new CustomActionResult<BaseResponse<UserDTO>>
             {
                 StatusCode = getCurrentUserResult.Code,
                 Data = getCurrentUserResult,
             };
         }
 
+        [HttpGet("/api/users")]
+        public async Task<IActionResult> GetPagingUsers([FromQuery] GetPagingUsersQuery request, CancellationToken cancellationToken)
+        {
+            var getPagingUsersResult = await _mediator.Send(request, cancellationToken);
+            return new CustomActionResult<BaseResponse<PagingResponseDTO<UserDTO>>>
+            {
+                StatusCode = getPagingUsersResult.Code,
+                Data = getPagingUsersResult,
+            };
+        }
+
+        [HttpGet("/api/users/{slug}")]
+        public async Task<IActionResult> GetSingleUser([FromRoute] GetSingleUserQuery request, CancellationToken cancellationToken)
+        {
+            var getSingleUserResult = await _mediator.Send(request, cancellationToken);
+            return new CustomActionResult<BaseResponse<UserDTO>>
+            {
+                StatusCode = getSingleUserResult.Code,
+                Data = getSingleUserResult,
+            };
+        }
+
         [HttpPost("register")]
-        public async Task<IActionResult> UserRegister(UserRegisterCommand request, CancellationToken cancellationToken)
+        public async Task<IActionResult> UserRegister([FromBody] UserRegisterCommand request, CancellationToken cancellationToken)
         {
             var userRegisterResult = await _mediator.Send(request, cancellationToken);
-            return new CustomActionResult<BaseResponseDTO<AuthResponseDTO>>
+            return new CustomActionResult<BaseResponse<AuthResponseDTO>>
             {
                 StatusCode = userRegisterResult.Code,
                 Data = userRegisterResult,
@@ -43,10 +65,10 @@ namespace RealWorldConduit_API.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> UserLogin(UserLoginCommand request, CancellationToken cancellationToken)
+        public async Task<IActionResult> UserLogin([FromBody] UserLoginCommand request, CancellationToken cancellationToken)
         {
             var userLoginResult = await _mediator.Send(request, cancellationToken);
-            return new CustomActionResult<BaseResponseDTO<AuthResponseDTO>>
+            return new CustomActionResult<BaseResponse<AuthResponseDTO>>
             {
                 StatusCode = userLoginResult.Code,
                 Data = userLoginResult,
@@ -55,10 +77,10 @@ namespace RealWorldConduit_API.Controllers
 
         [Authorize]
         [HttpPost("/api/user/refresh-token")]
-        public async Task<IActionResult> UserRefreshToken(UserRefreshTokenCommand request, CancellationToken cancellationToken)
+        public async Task<IActionResult> UserRefreshToken([FromBody] UserRefreshTokenCommand request, CancellationToken cancellationToken)
         {
             var userRefreshTokenResult = await _mediator.Send(request, cancellationToken);
-            return new CustomActionResult<BaseResponseDTO<AuthResponseDTO>>
+            return new CustomActionResult<BaseResponse<AuthResponseDTO>>
             {
                 StatusCode = userRefreshTokenResult.Code,
                 Data = userRefreshTokenResult,
@@ -67,10 +89,10 @@ namespace RealWorldConduit_API.Controllers
 
         [Authorize]
         [HttpDelete("/api/user/revoke-token")]
-        public async Task<IActionResult> UserRevokeToken(UserRevokeTokenCommand request, CancellationToken cancellationToken)
+        public async Task<IActionResult> UserRevokeToken([FromBody] UserRevokeTokenCommand request, CancellationToken cancellationToken)
         {
             var userRevokeTokenResult = await _mediator.Send(request, cancellationToken);
-            return new CustomActionResult<BaseResponseDTO>
+            return new CustomActionResult<BaseResponse>
             {
                 StatusCode = userRevokeTokenResult.Code,
                 Data = userRevokeTokenResult,
@@ -82,7 +104,7 @@ namespace RealWorldConduit_API.Controllers
         public async Task<IActionResult> UpsertUserDetailAndLocation([FromBody] UpsertUserDetailAndLocationCommand request, CancellationToken cancellationToken)
         {
             var upsertUserDetailAndLocationResult = await _mediator.Send(request, cancellationToken);
-            return new CustomActionResult<BaseResponseDTO<UserDTO>>
+            return new CustomActionResult<BaseResponse<UserDTO>>
             {
                 StatusCode = upsertUserDetailAndLocationResult.Code,
                 Data = upsertUserDetailAndLocationResult
@@ -103,7 +125,7 @@ namespace RealWorldConduit_API.Controllers
             };
 
             var userUpdateLocationsResult = await _mediator.Send(request, cancellationToken);
-            return new CustomActionResult<BaseResponseDTO<LocationDTO>>
+            return new CustomActionResult<BaseResponse<LocationDTO>>
             {
                 StatusCode = userUpdateLocationsResult.Code,
                 Data = userUpdateLocationsResult
@@ -112,11 +134,10 @@ namespace RealWorldConduit_API.Controllers
 
         [Authorize]
         [HttpDelete("/api/user/locations/{slug}")]
-        public async Task<IActionResult> UserDeleteLocation([FromRoute] string slug, CancellationToken cancellationToken)
+        public async Task<IActionResult> UserDeleteLocation([FromRoute] UserDeleteLocationCommand request, CancellationToken cancellationToken)
         {
-            var request = new UserDeleteLocationCommand(slug);
             var userDeleteLocationResult = await _mediator.Send(request, cancellationToken);
-            return new CustomActionResult<BaseResponseDTO>
+            return new CustomActionResult<BaseResponse>
             {
                 StatusCode = userDeleteLocationResult.Code,
                 Data = userDeleteLocationResult

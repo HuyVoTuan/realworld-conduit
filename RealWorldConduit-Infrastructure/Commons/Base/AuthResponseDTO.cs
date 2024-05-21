@@ -2,7 +2,7 @@
 {
     public class AuthResponseDTO
     {
-        public String AccessToken { get; set; }
-        public String RefreshToken { get; set; }
+        public String AccessToken { get; init; }
+        public String RefreshToken { get; init; }
     }
 }

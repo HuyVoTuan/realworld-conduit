@@ -1,11 +1,8 @@
 ﻿namespace RealWorldConduit_Infrastructure.Commons.Base
 {
-    public class PagingRequestDTO<T>
+    public class PagingRequestDTO
     {
-        public int PageIndex { get; set; }
-        public int PageLimit { get; set; }
-        public int ItemLength { get; set; }
-        public int TotalPages { get; set; }
-        public List<T> Data { get; set; }
+        public string PageIndex { get; init; } = "1";
+        public string PageLimit { get; init; } = "5";
     }
 }

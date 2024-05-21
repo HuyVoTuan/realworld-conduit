@@ -94,7 +94,7 @@ namespace RealWorldConduit_Application.Users.Commands
                 _localizer = localizer;
                 _authService = authService;
             }
-            public async Task<BaseResponseDTO<AuthResponseDTO>> Handle(UserRegisterCommand request, CancellationToken cancellationToken)
+            public async Task<BaseResponse<AuthResponseDTO>> Handle(UserRegisterCommand request, CancellationToken cancellationToken)
             {
                 var newUser = new User
                 {
@@ -121,7 +121,7 @@ namespace RealWorldConduit_Application.Users.Commands
 
                 await _dbContext.SaveChangesAsync(cancellationToken);
 
-                return new BaseResponseDTO<AuthResponseDTO>
+                return new BaseResponse<AuthResponseDTO>
                 {
                     Code = HttpStatusCode.OK,
                     Message = _localizer.Translate("successfully.register", new List<string> { $"{newUser.Slug}" }),
