@@ -26,7 +26,7 @@ namespace RealWorldConduit_Application.Users.Queries
         public async Task<BaseResponse<UserDTO>> Handle(GetCurrentUserQuery request, CancellationToken cancellationToken)
         {
             var currentUser = await _dbContext.Users.AsNoTracking()
-                                                    .Include(x => x.Locations)
+                                                    .Include(x => x.Location)
                                                     .FirstOrDefaultAsync(x => x.Id == _currentUserService.Id, cancellationToken);
 
             var currentUserDTO = new UserDTO
@@ -38,13 +38,14 @@ namespace RealWorldConduit_Application.Users.Queries
                 Email = currentUser.Email,
                 CreatedDate = currentUser.CreatedDate,
                 UpdatedDate = currentUser.UpdatedDate,
-                Locations = currentUser.Locations.Select(x => new LocationDTO
+                Locations = new LocationDTO
                 {
-                    Slug = x.Slug,
-                    Address = x.Address,
-                    District = x.District,
-                    City = x.City,
-                })
+                    Slug = currentUser.Location.Slug,
+                    Address = currentUser.Location.Address,
+                    District = currentUser.Location.District,
+                    City = currentUser.Location.City,
+                    CountryCode = currentUser.Location.CountryCode,
+                }
             };
 
             return new BaseResponse<UserDTO>

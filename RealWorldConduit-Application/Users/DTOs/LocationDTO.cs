@@ -7,5 +7,6 @@
         public string District { get; init; }
         public string Ward { get; init; }
         public string City { get; init; }
+        public string CountryCode { get; init; }
     }
 }

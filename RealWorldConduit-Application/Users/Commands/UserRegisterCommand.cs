@@ -1,5 +1,8 @@
 ﻿using FluentValidation;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
+using RealWorldConduit_Application.Users.DTOs;
+using RealWorldConduit_Domain.Constants;
 using RealWorldConduit_Domain.Entities;
 using RealWorldConduit_Infrastructure;
 using RealWorldConduit_Infrastructure.Commons;
@@ -20,6 +23,7 @@ namespace RealWorldConduit_Application.Users.Commands
         public string District { get; init; }
         public string Ward { get; init; }
         public string City { get; init; }
+        public string CountryCode { get; init; }
     }
 
     public class UserRegisterCommandValidator : AbstractValidator<UserRegisterCommand>
@@ -68,8 +72,8 @@ namespace RealWorldConduit_Application.Users.Commands
                                     .WithMessage(_localizer.Translate("cant_be_empty"));
 
             RuleFor(x => x.Ward).NotEmpty()
-                               .OverridePropertyName(_localizer.Translate("ward"))
-                               .WithMessage(_localizer.Translate("failure.cant_be_empty"));
+                                .OverridePropertyName(_localizer.Translate("ward"))
+                                .WithMessage(_localizer.Translate("failure.cant_be_empty"));
 
             RuleFor(x => x.City).NotEmpty()
                                 .OverridePropertyName(_localizer.Translate("city"))
@@ -77,6 +81,17 @@ namespace RealWorldConduit_Application.Users.Commands
                                 .Must(StringHelper.IsValidString)
                                 .OverridePropertyName(_localizer.Translate("city"))
                                 .WithMessage(_localizer.Translate("invalid"));
+
+            // TODO: Implement Proper Validation
+            RuleFor(x => x.CountryCode).NotEmpty()
+                                       .OverridePropertyName(_localizer.Translate("country"))
+                                       .WithMessage(_localizer.Translate("cant_be_empty"))
+                                       .Must(code =>
+                                       {
+                                           return code == CountryCode.vietnamCode || code == CountryCode.usaCode;
+                                       })
+                                       .OverridePropertyName(_localizer.Translate("country"))
+                                       .WithMessage(_localizer.Translate("not_supported"));
         }
 
         internal class UserRegisterCommandHandler : IRequestWithBaseResponseHandler<UserRegisterCommand, AuthResponseDTO>
@@ -96,21 +111,30 @@ namespace RealWorldConduit_Application.Users.Commands
             }
             public async Task<BaseResponse<AuthResponseDTO>> Handle(UserRegisterCommand request, CancellationToken cancellationToken)
             {
+                var countryCode = await _dbContext.Countries.AsNoTracking().FirstOrDefaultAsync(x => x.Code == request.CountryCode, cancellationToken);
+
+                if (countryCode is null)
+                {
+                    throw new RestfulAPIException(HttpStatusCode.NotFound, _localizer.Translate("not_found", new List<string> { _localizer.Translate("country_code") }));
+                }
+
+                var newMemberLocation = new Location
+                {
+                    Slug = StringHelper.GenerateSlug($"{request.Address} {request.City}"),
+                    Address = request.Address,
+                    City = request.City,
+                    Ward = request.Ward,
+                    District = request.District,
+                    CountryCode = countryCode.Code,
+                };
+
                 var newUser = new User
                 {
                     Slug = StringHelper.GenerateSlug(request.Username),
                     Username = request.Username,
                     Email = request.Email,
                     Password = _authService.HashPassword(request.Password),
-                };
-
-                var newMemberLocation = new Location
-                {
-                    Slug = StringHelper.GenerateSlug($"{request.Address} {request.District} {request.City}"),
-                    User = newUser,
-                    Address = request.Address,
-                    City = request.City,
-                    District = request.District,
+                    Location = newMemberLocation,
                 };
 
                 await _dbContext.Users.AddAsync(newUser, cancellationToken);

@@ -12,8 +12,8 @@ using RealWorldConduit_Infrastructure;
 namespace RealWorldConduit_Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240520035700_Add_Ward_Prop_To_Location_Table")]
-    partial class Add_Ward_Prop_To_Location_Table
+    [Migration("20240523134815_Initialize-Database")]
+    partial class InitializeDatabase
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -564,6 +564,25 @@ namespace RealWorldConduit_Infrastructure.Migrations
                     b.ToTable("Comment", "blog");
                 });
 
+            modelBuilder.Entity("RealWorldConduit_Domain.Entities.Country", b =>
+                {
+                    b.Property<string>("Code")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Language")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Code");
+
+                    b.ToTable("Country", "user");
+                });
+
             modelBuilder.Entity("RealWorldConduit_Domain.Entities.FavoriteBlog", b =>
                 {
                     b.Property<Guid>("UserId")
@@ -587,10 +606,10 @@ namespace RealWorldConduit_Infrastructure.Migrations
 
             modelBuilder.Entity("RealWorldConduit_Domain.Entities.Friendship", b =>
                 {
-                    b.Property<Guid>("BeingFollowedUserId")
+                    b.Property<Guid>("UserThatFollowId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("FollowerId")
+                    b.Property<Guid>("UserBeingFollowedId")
                         .HasColumnType("uuid");
 
                     b.Property<DateTime>("CreatedDate")
@@ -599,9 +618,9 @@ namespace RealWorldConduit_Infrastructure.Migrations
                     b.Property<DateTime>("UpdatedDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.HasKey("BeingFollowedUserId", "FollowerId");
+                    b.HasKey("UserThatFollowId", "UserBeingFollowedId");
 
-                    b.HasIndex("FollowerId");
+                    b.HasIndex("UserBeingFollowedId");
 
                     b.ToTable("Friendship", "user");
                 });
@@ -620,11 +639,13 @@ namespace RealWorldConduit_Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("CountryCode")
+                        .HasColumnType("text");
+
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("District")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Slug")
@@ -634,21 +655,17 @@ namespace RealWorldConduit_Infrastructure.Migrations
                     b.Property<DateTime>("UpdatedDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uuid");
-
                     b.Property<string>("Ward")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("Id");
 
                     b.HasIndex("Address");
 
+                    b.HasIndex("CountryCode");
+
                     b.HasIndex("Slug")
                         .IsUnique();
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Location", "user");
                 });
@@ -728,6 +745,9 @@ namespace RealWorldConduit_Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<Guid>("LocationId")
+                        .HasColumnType("uuid");
+
                     b.Property<string>("Password")
                         .IsRequired()
                         .HasColumnType("text");
@@ -743,10 +763,15 @@ namespace RealWorldConduit_Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<bool>("isActive")
+                        .HasColumnType("boolean");
+
                     b.HasKey("Id");
 
                     b.HasIndex("Email")
                         .IsUnique();
+
+                    b.HasIndex("LocationId");
 
                     b.HasIndex("Slug")
                         .IsUnique();
@@ -887,32 +912,30 @@ namespace RealWorldConduit_Infrastructure.Migrations
 
             modelBuilder.Entity("RealWorldConduit_Domain.Entities.Friendship", b =>
                 {
-                    b.HasOne("RealWorldConduit_Domain.Entities.User", "BeingFollowedUser")
-                        .WithMany("BeingFollowedUser")
-                        .HasForeignKey("BeingFollowedUserId")
+                    b.HasOne("RealWorldConduit_Domain.Entities.User", "UserBeingFollowed")
+                        .WithMany("UserBeingFollowed")
+                        .HasForeignKey("UserBeingFollowedId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("RealWorldConduit_Domain.Entities.User", "Follower")
-                        .WithMany("Follower")
-                        .HasForeignKey("FollowerId")
+                    b.HasOne("RealWorldConduit_Domain.Entities.User", "UserThatFollow")
+                        .WithMany("UserThatFollow")
+                        .HasForeignKey("UserThatFollowId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("BeingFollowedUser");
+                    b.Navigation("UserBeingFollowed");
 
-                    b.Navigation("Follower");
+                    b.Navigation("UserThatFollow");
                 });
 
             modelBuilder.Entity("RealWorldConduit_Domain.Entities.Location", b =>
                 {
-                    b.HasOne("RealWorldConduit_Domain.Entities.User", "User")
+                    b.HasOne("RealWorldConduit_Domain.Entities.Country", "Country")
                         .WithMany("Locations")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CountryCode");
 
-                    b.Navigation("User");
+                    b.Navigation("Country");
                 });
 
             modelBuilder.Entity("RealWorldConduit_Domain.Entities.RefreshToken", b =>
@@ -924,6 +947,17 @@ namespace RealWorldConduit_Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("RealWorldConduit_Domain.Entities.User", b =>
+                {
+                    b.HasOne("RealWorldConduit_Domain.Entities.Location", "Location")
+                        .WithMany("Users")
+                        .HasForeignKey("LocationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Location");
                 });
 
             modelBuilder.Entity("AppAny.Quartz.EntityFrameworkCore.Migrations.QuartzJobDetail", b =>
@@ -951,6 +985,16 @@ namespace RealWorldConduit_Infrastructure.Migrations
                     b.Navigation("FavoriteBlogs");
                 });
 
+            modelBuilder.Entity("RealWorldConduit_Domain.Entities.Country", b =>
+                {
+                    b.Navigation("Locations");
+                });
+
+            modelBuilder.Entity("RealWorldConduit_Domain.Entities.Location", b =>
+                {
+                    b.Navigation("Users");
+                });
+
             modelBuilder.Entity("RealWorldConduit_Domain.Entities.Tag", b =>
                 {
                     b.Navigation("BlogTags");
@@ -958,19 +1002,17 @@ namespace RealWorldConduit_Infrastructure.Migrations
 
             modelBuilder.Entity("RealWorldConduit_Domain.Entities.User", b =>
                 {
-                    b.Navigation("BeingFollowedUser");
-
                     b.Navigation("Blogs");
 
                     b.Navigation("Comments");
 
                     b.Navigation("FavoriteBlogs");
 
-                    b.Navigation("Follower");
-
-                    b.Navigation("Locations");
-
                     b.Navigation("RefreshTokens");
+
+                    b.Navigation("UserBeingFollowed");
+
+                    b.Navigation("UserThatFollow");
                 });
 #pragma warning restore 612, 618
         }

@@ -10,12 +10,14 @@ namespace RealWorldConduit_Domain.Entities
         public string Email { get; set; }
         public string Password { get; set; }
         public string Bio { get; set; }
+        public bool isActive { get; set; }
+        public Guid LocationId { get; set; }
+        public virtual Location Location { get; set; }
         public virtual ICollection<Blog> Blogs { get; set; }
-        public virtual ICollection<RefreshToken> RefreshTokens { get; set; }
-        public virtual ICollection<FavoriteBlog> FavoriteBlogs { get; set; }
-        public virtual ICollection<Friendship> BeingFollowedUser { get; set; }
-        public virtual ICollection<Friendship> Follower { get; set; }
         public virtual ICollection<Comment> Comments { get; set; }
-        public virtual ICollection<Location> Locations { get; set; }
+        public virtual ICollection<FavoriteBlog> FavoriteBlogs { get; set; }
+        public virtual ICollection<RefreshToken> RefreshTokens { get; set; }
+        public virtual ICollection<Friendship> UserThatFollow { get; set; }
+        public virtual ICollection<Friendship> UserBeingFollowed { get; set; }
     }
 }

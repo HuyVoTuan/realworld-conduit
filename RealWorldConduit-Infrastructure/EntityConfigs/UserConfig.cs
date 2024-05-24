@@ -20,6 +20,11 @@ namespace RealWorldConduit_Infrastructure.EntityConfigs
             builder.Property(x => x.Username).IsRequired();
             builder.Property(x => x.Email).IsRequired();
             builder.Property(x => x.Password).IsRequired();
+
+            builder.HasOne(u => u.Location)
+                   .WithMany(l => l.Users)
+                   .HasForeignKey(u => u.LocationId)
+                   .IsRequired(false);
         }
     }
 }

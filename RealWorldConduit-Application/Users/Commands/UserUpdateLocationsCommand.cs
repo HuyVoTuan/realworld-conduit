@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 using RealWorldConduit_Application.Users.DTOs;
+using RealWorldConduit_Domain.Constants;
 using RealWorldConduit_Infrastructure;
 using RealWorldConduit_Infrastructure.Commons;
 using RealWorldConduit_Infrastructure.Commons.Base;
@@ -18,6 +19,7 @@ namespace RealWorldConduit_Application.Users.Commands
         public string District { get; init; }
         public string Ward { get; init; }
         public string City { get; init; }
+        public string CountryCode { get; init; }
     };
 
     public class UserUpdateLocationsCommandDTOValidator : AbstractValidator<UserUpdateLocationsCommandDTO>
@@ -46,6 +48,17 @@ namespace RealWorldConduit_Application.Users.Commands
                                 .Must(StringHelper.IsValidString)
                                 .OverridePropertyName(_localizer.Translate("city"))
                                 .WithMessage(_localizer.Translate("failure.invalid"));
+
+            // TODO: Implement Proper Validation
+            RuleFor(x => x.CountryCode).NotEmpty()
+                                       .OverridePropertyName(_localizer.Translate("country"))
+                                       .WithMessage(_localizer.Translate("cant_be_empty"))
+                                       .Must(code =>
+                                       {
+                                           return code == CountryCode.vietnamCode || code == CountryCode.usaCode;
+                                       })
+                                       .OverridePropertyName(_localizer.Translate("country"))
+                                       .WithMessage(_localizer.Translate("not_supported"));
         }
     }
 
@@ -56,6 +69,7 @@ namespace RealWorldConduit_Application.Users.Commands
         public string District { get; init; }
         public string Ward { get; init; }
         public string City { get; init; }
+        public string CountryCode { get; init; }
     };
 
     internal class UserUpdateLocationsCommandHandler : IRequestWithBaseResponseHandler<UserUpdateLocationsCommand, LocationDTO>
@@ -75,26 +89,26 @@ namespace RealWorldConduit_Application.Users.Commands
         }
         public async Task<BaseResponse<LocationDTO>> Handle(UserUpdateLocationsCommand request, CancellationToken cancellationToken)
         {
-            var slug = StringHelper.GenerateSlug($"{request.Address} {request.District} {request.City}");
+            var existingUser = await _dbContext.Users.Include(x => x.Location)
+                                                     .FirstOrDefaultAsync(x => x.Id == _currentUser.Id && x.Location.Slug == request.Slug, cancellationToken);
 
-            var existingUserLocation = await _dbContext.Locations.Include(x => x.User)
-                                                                 .FirstOrDefaultAsync(x => x.Slug == request.Slug && x.UserId == _currentUser.Id, cancellationToken);
-
-            if (existingUserLocation is null)
+            if (existingUser is null)
             {
                 throw new RestfulAPIException(HttpStatusCode.NotFound, _localizer.Translate("not_found"));
             }
 
             // Prevent re-generated slug if username stay the same
-            if (!StringHelper.IsSlugContainFullname(slug, existingUserLocation.Slug))
+            var slug = StringHelper.GenerateSlug($"{request.Address} {request.City}");
+            if (!StringHelper.IsSlugContainFullname(slug, existingUser.Location.Slug))
             {
-                existingUserLocation.Slug = slug;
+                existingUser.Location.Slug = slug;
             }
 
-            existingUserLocation.Address = request.Address;
-            existingUserLocation.District = request.District;
-            existingUserLocation.Ward = request.Ward;
-            existingUserLocation.City = request.City;
+            existingUser.Location.Address = request.Address;
+            existingUser.Location.District = request.District;
+            existingUser.Location.Ward = request.Ward;
+            existingUser.Location.City = request.City;
+            existingUser.Location.CountryCode = request.CountryCode;
 
             // Save to database
             await _dbContext.SaveChangesAsync(cancellationToken);
@@ -102,11 +116,12 @@ namespace RealWorldConduit_Application.Users.Commands
             // Map to DTO
             var locationDTO = new LocationDTO
             {
-                Slug = existingUserLocation.Slug,
-                Address = existingUserLocation.Address,
-                District = existingUserLocation.District,
-                Ward = existingUserLocation.Ward,
-                City = existingUserLocation.City,
+                Slug = existingUser.Location.Slug,
+                Address = existingUser.Location.Address,
+                District = existingUser.Location.District,
+                Ward = existingUser.Location.Ward,
+                City = existingUser.Location.City,
+                CountryCode = existingUser.Location.CountryCode,
             };
 
             return new BaseResponse<LocationDTO>

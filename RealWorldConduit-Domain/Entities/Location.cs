@@ -6,10 +6,11 @@ namespace RealWorldConduit_Domain.Entities
     {
         public string Slug { get; set; }
         public string Address { get; set; }
-        public string District { get; set; }
         public string Ward { get; set; }
+        public string District { get; set; }
         public string City { get; set; }
-        public Guid UserId { get; set; }
-        public virtual User User { get; set; }
+        public string CountryCode { get; set; }
+        public virtual Country Country { get; set; }
+        public virtual ICollection<User> Users { get; set; }
     }
 }

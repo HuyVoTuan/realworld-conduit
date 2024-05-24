@@ -25,14 +25,15 @@ namespace RealWorldConduit_Application.Users.Commands
         }
         public async Task<BaseResponse> Handle(UserDeleteLocationCommand request, CancellationToken cancellationToken)
         {
-            var existingUserLocation = await _dbContext.Locations.FirstOrDefaultAsync(x => x.Slug == request.Slug && x.UserId == _currentUser.Id, cancellationToken);
+            var existingUserLocation = await _dbContext.Users.Include(x => x.Location)
+                                                             .FirstOrDefaultAsync(x => x.Location.Slug == request.Slug && x.Id == _currentUser.Id, cancellationToken);
 
             if (existingUserLocation is null)
             {
                 throw new RestfulAPIException(HttpStatusCode.NotFound, _localizer.Translate("not_found"));
             }
 
-            _dbContext.Locations.Remove(existingUserLocation);
+            _dbContext.Locations.Remove(existingUserLocation.Location);
             await _dbContext.SaveChangesAsync(cancellationToken);
 
             return new BaseResponse(HttpStatusCode.NoContent);

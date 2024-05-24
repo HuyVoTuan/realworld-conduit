@@ -11,15 +11,15 @@ namespace RealWorldConduit_Infrastructure.EntityConfigs
         {
             builder.ToTable(nameof(Friendship), DatabaseSchema.UserSchema);
 
-            builder.HasKey(x => new { x.BeingFollowedUserId, x.FollowerId });
+            builder.HasKey(x => new { x.UserThatFollowId, x.UserBeingFollowedId });
 
-            builder.HasOne(f => f.Follower)
-                   .WithMany(fl => fl.Follower)
-                   .HasForeignKey(f => f.FollowerId);
+            builder.HasOne(f => f.UserThatFollow)
+                   .WithMany(fl => fl.UserThatFollow)
+                   .HasForeignKey(f => f.UserThatFollowId);
 
-            builder.HasOne(f => f.BeingFollowedUser)
-                   .WithMany(fl => fl.BeingFollowedUser)
-                   .HasForeignKey(f => f.BeingFollowedUserId);
+            builder.HasOne(f => f.UserBeingFollowed)
+                   .WithMany(fl => fl.UserBeingFollowed)
+                   .HasForeignKey(f => f.UserBeingFollowedId);
         }
     }
 }

@@ -12,6 +12,15 @@ namespace RealWorldConduit_Infrastructure.Extensions
                 builder.AddConsole();
             });
             services.AddMemoryCache();
+            services.AddCors(opt =>
+            {
+                opt.AddDefaultPolicy(builder =>
+                {
+                    builder.WithOrigins("http://127.0.0.1:5500")
+                           .AllowAnyHeader()
+                           .AllowAnyMethod();
+                });
+            });
             return services;
         }
     }

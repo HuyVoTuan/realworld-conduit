@@ -56,13 +56,14 @@ namespace RealWorldConduit_Application.Users.Queries
                                                 Bio = x.Bio,
                                                 CreatedDate = x.CreatedDate,
                                                 UpdatedDate = x.UpdatedDate,
-                                                Locations = x.Locations.Select(l => new LocationDTO
+                                                Locations = new LocationDTO
                                                 {
-                                                    Address = l.Address,
-                                                    District = l.District,
-                                                    Ward = l.Ward,
-                                                    City = l.City
-                                                })
+                                                    Address = x.Location.Address,
+                                                    District = x.Location.District,
+                                                    Ward = x.Location.Ward,
+                                                    City = x.Location.City,
+                                                    CountryCode = x.Location.CountryCode
+                                                }
                                             })
                                             .OrderByDescending(x => x.CreatedDate);
 

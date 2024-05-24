@@ -4,9 +4,9 @@ namespace RealWorldConduit_Domain.Entities
 {
     public class Friendship : BaseEntity
     {
-        public Guid BeingFollowedUserId { get; set; }
-        public virtual User BeingFollowedUser { get; set; }
-        public Guid FollowerId { get; set; }
-        public virtual User Follower { get; set; }
+        public Guid UserBeingFollowedId { get; set; }
+        public virtual User UserBeingFollowed { get; set; }
+        public Guid UserThatFollowId { get; set; }
+        public virtual User UserThatFollow { get; set; }
     }
 }

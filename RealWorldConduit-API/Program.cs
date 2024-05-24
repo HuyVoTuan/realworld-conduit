@@ -77,6 +77,9 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+// CORS
+app.UseCors();
+
 // Authentication - Authorization
 app.UseAuthentication();
 app.UseAuthorization();

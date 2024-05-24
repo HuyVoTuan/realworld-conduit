@@ -17,14 +17,12 @@ namespace RealWorldConduit_Infrastructure.EntityConfigs
             builder.HasIndex(x => x.Slug).IsUnique();
 
             builder.Property(x => x.Slug).IsRequired();
-            builder.Property(x => x.Address).IsRequired();
-            builder.Property(x => x.District).IsRequired();
-            builder.Property(x => x.Ward).IsRequired();
             builder.Property(x => x.City).IsRequired();
+            builder.Property(x => x.Address).IsRequired();
 
-            builder.HasOne(l => l.User)
-                   .WithMany(u => u.Locations)
-                   .HasForeignKey(l => l.UserId);
+            builder.HasOne(l => l.Country)
+                   .WithMany(c => c.Locations)
+                   .HasForeignKey(l => l.CountryCode);
         }
     }
 }

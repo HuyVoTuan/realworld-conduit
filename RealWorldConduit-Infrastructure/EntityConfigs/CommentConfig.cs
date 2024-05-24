@@ -17,8 +17,7 @@ namespace RealWorldConduit_Infrastructure.EntityConfigs
 
             builder.HasOne(c => c.User)
                    .WithMany(u => u.Comments)
-                   .HasForeignKey(c => c.UserId)
-                   .IsRequired();
+                   .HasForeignKey(c => c.UserId);
 
             builder.HasOne(c => c.Blog)
                    .WithMany(b => b.Comments)
