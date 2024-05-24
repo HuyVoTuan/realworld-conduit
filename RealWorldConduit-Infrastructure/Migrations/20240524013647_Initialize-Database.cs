@@ -25,21 +25,6 @@ namespace RealWorldConduit_Infrastructure.Migrations
                 .Annotation("Npgsql:PostgresExtension:uuid-ossp", ",,");
 
             migrationBuilder.CreateTable(
-                name: "Country",
-                schema: "user",
-                columns: table => new
-                {
-                    Code = table.Column<string>(type: "text", nullable: false),
-                    Language = table.Column<string>(type: "text", nullable: true),
-                    CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    UpdatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Country", x => x.Code);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "qrtz_calendars",
                 schema: "quartz",
                 columns: table => new
@@ -155,29 +140,24 @@ namespace RealWorldConduit_Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Location",
+                name: "User",
                 schema: "user",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Slug = table.Column<string>(type: "text", nullable: false),
-                    Address = table.Column<string>(type: "text", nullable: false),
-                    Ward = table.Column<string>(type: "text", nullable: true),
-                    District = table.Column<string>(type: "text", nullable: true),
-                    City = table.Column<string>(type: "text", nullable: false),
-                    CountryCode = table.Column<string>(type: "text", nullable: true),
+                    AvatarUrl = table.Column<string>(type: "text", nullable: true),
+                    Username = table.Column<string>(type: "text", nullable: false),
+                    Email = table.Column<string>(type: "text", nullable: false),
+                    Password = table.Column<string>(type: "text", nullable: false),
+                    Bio = table.Column<string>(type: "text", nullable: true),
+                    isActive = table.Column<bool>(type: "boolean", nullable: false, defaultValue: false),
                     CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Location", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Location_Country_CountryCode",
-                        column: x => x.CountryCode,
-                        principalSchema: "user",
-                        principalTable: "Country",
-                        principalColumn: "Code");
+                    table.PrimaryKey("PK_User", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -215,30 +195,79 @@ namespace RealWorldConduit_Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "User",
-                schema: "user",
+                name: "Blog",
+                schema: "blog",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Slug = table.Column<string>(type: "text", nullable: false),
-                    AvatarUrl = table.Column<string>(type: "text", nullable: true),
-                    Username = table.Column<string>(type: "text", nullable: false),
-                    Email = table.Column<string>(type: "text", nullable: false),
-                    Password = table.Column<string>(type: "text", nullable: false),
-                    Bio = table.Column<string>(type: "text", nullable: true),
-                    isActive = table.Column<bool>(type: "boolean", nullable: false),
-                    LocationId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Title = table.Column<string>(type: "text", nullable: false),
+                    Content = table.Column<string>(type: "text", nullable: false),
+                    AuthorId = table.Column<Guid>(type: "uuid", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_User", x => x.Id);
+                    table.PrimaryKey("PK_Blog", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_User_Location_LocationId",
-                        column: x => x.LocationId,
+                        name: "FK_Blog_User_AuthorId",
+                        column: x => x.AuthorId,
                         principalSchema: "user",
-                        principalTable: "Location",
+                        principalTable: "User",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Friendship",
+                schema: "user",
+                columns: table => new
+                {
+                    UserBeingFollowedId = table.Column<Guid>(type: "uuid", nullable: false),
+                    UserThatFollowId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Friendship", x => new { x.UserThatFollowId, x.UserBeingFollowedId });
+                    table.ForeignKey(
+                        name: "FK_Friendship_User_UserBeingFollowedId",
+                        column: x => x.UserBeingFollowedId,
+                        principalSchema: "user",
+                        principalTable: "User",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Friendship_User_UserThatFollowId",
+                        column: x => x.UserThatFollowId,
+                        principalSchema: "user",
+                        principalTable: "User",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "RefreshToken",
+                schema: "user",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    RefreshTokenString = table.Column<string>(type: "text", nullable: false),
+                    ExpiredTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UserId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RefreshToken", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_RefreshToken_User_UserId",
+                        column: x => x.UserId,
+                        principalSchema: "user",
+                        principalTable: "User",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -342,84 +371,6 @@ namespace RealWorldConduit_Infrastructure.Migrations
                         principalSchema: "quartz",
                         principalTable: "qrtz_triggers",
                         principalColumns: new[] { "sched_name", "trigger_name", "trigger_group" },
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Blog",
-                schema: "blog",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Slug = table.Column<string>(type: "text", nullable: false),
-                    Title = table.Column<string>(type: "text", nullable: false),
-                    Content = table.Column<string>(type: "text", nullable: false),
-                    AuthorId = table.Column<Guid>(type: "uuid", nullable: false),
-                    CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    UpdatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Blog", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Blog_User_AuthorId",
-                        column: x => x.AuthorId,
-                        principalSchema: "user",
-                        principalTable: "User",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Friendship",
-                schema: "user",
-                columns: table => new
-                {
-                    UserBeingFollowedId = table.Column<Guid>(type: "uuid", nullable: false),
-                    UserThatFollowId = table.Column<Guid>(type: "uuid", nullable: false),
-                    CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    UpdatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Friendship", x => new { x.UserThatFollowId, x.UserBeingFollowedId });
-                    table.ForeignKey(
-                        name: "FK_Friendship_User_UserBeingFollowedId",
-                        column: x => x.UserBeingFollowedId,
-                        principalSchema: "user",
-                        principalTable: "User",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Friendship_User_UserThatFollowId",
-                        column: x => x.UserThatFollowId,
-                        principalSchema: "user",
-                        principalTable: "User",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "RefreshToken",
-                schema: "user",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    RefreshTokenString = table.Column<string>(type: "text", nullable: false),
-                    ExpiredTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    UserId = table.Column<Guid>(type: "uuid", nullable: false),
-                    CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    UpdatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_RefreshToken", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_RefreshToken_User_UserId",
-                        column: x => x.UserId,
-                        principalSchema: "user",
-                        principalTable: "User",
-                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -570,25 +521,6 @@ namespace RealWorldConduit_Infrastructure.Migrations
                 column: "UserBeingFollowedId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Location_Address",
-                schema: "user",
-                table: "Location",
-                column: "Address");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Location_CountryCode",
-                schema: "user",
-                table: "Location",
-                column: "CountryCode");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Location_Slug",
-                schema: "user",
-                table: "Location",
-                column: "Slug",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
                 name: "idx_qrtz_ft_job_group",
                 schema: "quartz",
                 table: "qrtz_fired_triggers",
@@ -688,12 +620,6 @@ namespace RealWorldConduit_Infrastructure.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_User_LocationId",
-                schema: "user",
-                table: "User",
-                column: "LocationId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_User_Slug",
                 schema: "user",
                 table: "User",
@@ -779,14 +705,6 @@ namespace RealWorldConduit_Infrastructure.Migrations
             migrationBuilder.DropTable(
                 name: "qrtz_job_details",
                 schema: "quartz");
-
-            migrationBuilder.DropTable(
-                name: "Location",
-                schema: "user");
-
-            migrationBuilder.DropTable(
-                name: "Country",
-                schema: "user");
         }
     }
 }

@@ -21,7 +21,9 @@ namespace RealWorldConduit_Application.Users.Commands
 
         public async Task<BaseResponse> Handle(UserRevokeTokenCommand request, CancellationToken cancellationToken)
         {
-            var refreshTokenLists = await _dbContext.RefreshTokens.Where(x => x.UserId == _currentUser.Id).ToListAsync(cancellationToken);
+            var refreshTokenLists = await _dbContext.RefreshTokens
+                                                    .Include(x => x.User)
+                                                    .Where(x => x.UserId == _currentUser.Id && x.User.isActive == true).ToListAsync(cancellationToken);
 
             _dbContext.RefreshTokens.RemoveRange(refreshTokenLists);
             await _dbContext.SaveChangesAsync(cancellationToken);

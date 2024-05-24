@@ -11,7 +11,7 @@ using System.Net;
 
 namespace RealWorldConduit_Application.Users.Queries
 {
-    public class GetPagingUsersQuery : PagingRequestDTO, IRequestWithBaseResponse<PagingResponseDTO<UserDTO>>
+    public class GetPagingUsersQuery : PagingRequestDTO, IRequestWithBaseResponse<PagingResponseDTO<MinimalUserDTO>>
     {
     }
 
@@ -34,7 +34,7 @@ namespace RealWorldConduit_Application.Users.Queries
                                      .WithMessage(_localizer.Translate("invalid"));
         }
 
-        internal class GetPagingUsersQuerytHandler : IRequestWithBaseResponseHandler<GetPagingUsersQuery, PagingResponseDTO<UserDTO>>
+        internal class GetPagingUsersQuerytHandler : IRequestWithBaseResponseHandler<GetPagingUsersQuery, PagingResponseDTO<MinimalUserDTO>>
         {
             private readonly ApplicationDbContext _dbContext;
             private readonly IStringLocalizer<GetPagingUsersQuerytHandler> _localizer;
@@ -44,10 +44,10 @@ namespace RealWorldConduit_Application.Users.Queries
                 _localizer = localizer;
                 _dbContext = dbContext;
             }
-            public async Task<BaseResponse<PagingResponseDTO<UserDTO>>> Handle(GetPagingUsersQuery request, CancellationToken cancellationToken)
+            public async Task<BaseResponse<PagingResponseDTO<MinimalUserDTO>>> Handle(GetPagingUsersQuery request, CancellationToken cancellationToken)
             {
-                var query = _dbContext.Users.AsNoTracking()
-                                            .Select(x => new UserDTO
+                var usersQueryDTO = _dbContext.Users.AsNoTracking()
+                                            .Select(x => new MinimalUserDTO
                                             {
                                                 Slug = x.Slug,
                                                 Username = x.Username,
@@ -56,36 +56,28 @@ namespace RealWorldConduit_Application.Users.Queries
                                                 Bio = x.Bio,
                                                 CreatedDate = x.CreatedDate,
                                                 UpdatedDate = x.UpdatedDate,
-                                                Locations = new LocationDTO
-                                                {
-                                                    Address = x.Location.Address,
-                                                    District = x.Location.District,
-                                                    Ward = x.Location.Ward,
-                                                    City = x.Location.City,
-                                                    CountryCode = x.Location.CountryCode
-                                                }
                                             })
                                             .OrderByDescending(x => x.CreatedDate);
 
                 // Calculate item length
-                var totalUsers = await query.CountAsync(cancellationToken);
+                var totalUsers = await usersQueryDTO.CountAsync(cancellationToken);
 
                 // Convert string paging request fields to integer
                 int.TryParse(request.PageIndex, out var pageIndex);
                 int.TryParse(request.PageLimit, out var pageLimit);
 
                 // Perform pagination on item length with request page index and page limit
-                var pagedUsersDTO = await query.Page(pageIndex, pageLimit)
-                                               .ToListAsync(cancellationToken);
+                var pagedUsersDTO = await usersQueryDTO.Page(pageIndex, pageLimit)
+                                                       .ToListAsync(cancellationToken);
 
                 // Calculate total pages
                 var totalPages = Math.Ceiling((double)totalUsers / pageLimit);
 
-                return new BaseResponse<PagingResponseDTO<UserDTO>>
+                return new BaseResponse<PagingResponseDTO<MinimalUserDTO>>
                 {
                     Code = HttpStatusCode.OK,
                     Message = _localizer.Translate("successful.retrieve", new List<string> { _localizer.Translate("users") }),
-                    Data = new PagingResponseDTO<UserDTO>
+                    Data = new PagingResponseDTO<MinimalUserDTO>
                     {
                         PageIndex = pageIndex,
                         PageLimit = pageLimit,

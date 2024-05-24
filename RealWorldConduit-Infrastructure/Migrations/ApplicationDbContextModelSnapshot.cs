@@ -561,25 +561,6 @@ namespace RealWorldConduit_Infrastructure.Migrations
                     b.ToTable("Comment", "blog");
                 });
 
-            modelBuilder.Entity("RealWorldConduit_Domain.Entities.Country", b =>
-                {
-                    b.Property<string>("Code")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Language")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("UpdatedDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.HasKey("Code");
-
-                    b.ToTable("Country", "user");
-                });
-
             modelBuilder.Entity("RealWorldConduit_Domain.Entities.FavoriteBlog", b =>
                 {
                     b.Property<Guid>("UserId")
@@ -620,51 +601,6 @@ namespace RealWorldConduit_Infrastructure.Migrations
                     b.HasIndex("UserBeingFollowedId");
 
                     b.ToTable("Friendship", "user");
-                });
-
-            modelBuilder.Entity("RealWorldConduit_Domain.Entities.Location", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("Address")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("City")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("CountryCode")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("District")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Slug")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("UpdatedDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Ward")
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Address");
-
-                    b.HasIndex("CountryCode");
-
-                    b.HasIndex("Slug")
-                        .IsUnique();
-
-                    b.ToTable("Location", "user");
                 });
 
             modelBuilder.Entity("RealWorldConduit_Domain.Entities.RefreshToken", b =>
@@ -742,9 +678,6 @@ namespace RealWorldConduit_Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<Guid>("LocationId")
-                        .HasColumnType("uuid");
-
                     b.Property<string>("Password")
                         .IsRequired()
                         .HasColumnType("text");
@@ -761,14 +694,14 @@ namespace RealWorldConduit_Infrastructure.Migrations
                         .HasColumnType("text");
 
                     b.Property<bool>("isActive")
-                        .HasColumnType("boolean");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(false);
 
                     b.HasKey("Id");
 
                     b.HasIndex("Email")
                         .IsUnique();
-
-                    b.HasIndex("LocationId");
 
                     b.HasIndex("Slug")
                         .IsUnique();
@@ -926,15 +859,6 @@ namespace RealWorldConduit_Infrastructure.Migrations
                     b.Navigation("UserThatFollow");
                 });
 
-            modelBuilder.Entity("RealWorldConduit_Domain.Entities.Location", b =>
-                {
-                    b.HasOne("RealWorldConduit_Domain.Entities.Country", "Country")
-                        .WithMany("Locations")
-                        .HasForeignKey("CountryCode");
-
-                    b.Navigation("Country");
-                });
-
             modelBuilder.Entity("RealWorldConduit_Domain.Entities.RefreshToken", b =>
                 {
                     b.HasOne("RealWorldConduit_Domain.Entities.User", "User")
@@ -944,15 +868,6 @@ namespace RealWorldConduit_Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("RealWorldConduit_Domain.Entities.User", b =>
-                {
-                    b.HasOne("RealWorldConduit_Domain.Entities.Location", "Location")
-                        .WithMany("Users")
-                        .HasForeignKey("LocationId");
-
-                    b.Navigation("Location");
                 });
 
             modelBuilder.Entity("AppAny.Quartz.EntityFrameworkCore.Migrations.QuartzJobDetail", b =>
@@ -978,16 +893,6 @@ namespace RealWorldConduit_Infrastructure.Migrations
                     b.Navigation("Comments");
 
                     b.Navigation("FavoriteBlogs");
-                });
-
-            modelBuilder.Entity("RealWorldConduit_Domain.Entities.Country", b =>
-                {
-                    b.Navigation("Locations");
-                });
-
-            modelBuilder.Entity("RealWorldConduit_Domain.Entities.Location", b =>
-                {
-                    b.Navigation("Users");
                 });
 
             modelBuilder.Entity("RealWorldConduit_Domain.Entities.Tag", b =>

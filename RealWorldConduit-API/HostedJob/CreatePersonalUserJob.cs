@@ -33,7 +33,7 @@ namespace RealWorldConduit_API.HostedJob
                 var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
                 var existingUser = await dbContext.Users.AsNoTracking()
-                                                     .FirstOrDefaultAsync(u => u.Email == _personalUserEmail);
+                                                        .FirstOrDefaultAsync(u => u.Email == _personalUserEmail);
 
                 if (existingUser is not null)
                 {
@@ -46,7 +46,8 @@ namespace RealWorldConduit_API.HostedJob
                         Slug = StringHelper.GenerateSlug($"{_personalUserUsername}"),
                         Email = _personalUserEmail,
                         Username = _personalUserUsername,
-                        Password = auth.HashPassword(_personalUserPassword)
+                        Password = auth.HashPassword(_personalUserPassword),
+                        isActive = true
                     };
 
                     await dbContext.Users.AddAsync(newUser, cancellationToken);

@@ -11,14 +11,12 @@ namespace RealWorldConduit_Infrastructure
     {
 
         public DbSet<User> Users { get; set; }
-        public DbSet<Location> Locations { get; set; }
-        public DbSet<Friendship> Friendships { get; set; }
-        public DbSet<RefreshToken> RefreshTokens { get; set; }
         public DbSet<Tag> Tags { get; set; }
         public DbSet<Blog> Blogs { get; set; }
         public DbSet<Comment> Comments { get; set; }
         public DbSet<BlogTag> BlogTags { get; set; }
-        public DbSet<Country> Countries { get; set; }
+        public DbSet<Friendship> Friendships { get; set; }
+        public DbSet<RefreshToken> RefreshTokens { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {

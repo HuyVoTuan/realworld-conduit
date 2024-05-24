@@ -21,10 +21,12 @@ namespace RealWorldConduit_API.Controllers
 
         [Authorize]
         [HttpGet("/api/user")]
-        public async Task<IActionResult> GetCurrentUser([FromBody] GetCurrentUserQuery request, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetCurrentUser(CancellationToken cancellationToken)
         {
+            var request = new GetCurrentUserQuery();
             var getCurrentUserResult = await _mediator.Send(request, cancellationToken);
-            return new CustomActionResult<BaseResponse<UserDTO>>
+
+            return new CustomActionResult<BaseResponse<MinimalUserDTO>>
             {
                 StatusCode = getCurrentUserResult.Code,
                 Data = getCurrentUserResult,
@@ -35,7 +37,7 @@ namespace RealWorldConduit_API.Controllers
         public async Task<IActionResult> GetPagingUsers([FromQuery] GetPagingUsersQuery request, CancellationToken cancellationToken)
         {
             var getPagingUsersResult = await _mediator.Send(request, cancellationToken);
-            return new CustomActionResult<BaseResponse<PagingResponseDTO<UserDTO>>>
+            return new CustomActionResult<BaseResponse<PagingResponseDTO<MinimalUserDTO>>>
             {
                 StatusCode = getPagingUsersResult.Code,
                 Data = getPagingUsersResult,
@@ -46,7 +48,7 @@ namespace RealWorldConduit_API.Controllers
         public async Task<IActionResult> GetSingleUser([FromRoute] GetSingleUserQuery request, CancellationToken cancellationToken)
         {
             var getSingleUserResult = await _mediator.Send(request, cancellationToken);
-            return new CustomActionResult<BaseResponse<UserDTO>>
+            return new CustomActionResult<BaseResponse<MinimalUserDTO>>
             {
                 StatusCode = getSingleUserResult.Code,
                 Data = getSingleUserResult,
@@ -101,46 +103,26 @@ namespace RealWorldConduit_API.Controllers
 
         [Authorize]
         [HttpPut("/api/user")]
-        public async Task<IActionResult> UpsertUserDetailAndLocation([FromBody] UpsertUserDetailAndLocationCommand request, CancellationToken cancellationToken)
+        public async Task<IActionResult> UpsertUserDetailAndLocation([FromBody] UpdateUserDetailCommand request, CancellationToken cancellationToken)
         {
-            var upsertUserDetailAndLocationResult = await _mediator.Send(request, cancellationToken);
-            return new CustomActionResult<BaseResponse<UserDTO>>
+            var updateUserDetailResult = await _mediator.Send(request, cancellationToken);
+            return new CustomActionResult<BaseResponse<MinimalUserDTO>>
             {
-                StatusCode = upsertUserDetailAndLocationResult.Code,
-                Data = upsertUserDetailAndLocationResult
+                StatusCode = updateUserDetailResult.Code,
+                Data = updateUserDetailResult
             };
         }
 
-        [Authorize]
-        [HttpPut("/api/user/locations/{slug}")]
-        public async Task<IActionResult> UserUpdateLocations([FromRoute] string slug, [FromBody] UserUpdateLocationsCommandDTO requestDTO, CancellationToken cancellationToken)
-        {
-            var request = new UserUpdateLocationsCommand
-            {
-                Slug = slug,
-                Address = requestDTO.Address,
-                District = requestDTO.District,
-                Ward = requestDTO.Ward,
-                City = requestDTO.City,
-            };
-
-            var userUpdateLocationsResult = await _mediator.Send(request, cancellationToken);
-            return new CustomActionResult<BaseResponse<LocationDTO>>
-            {
-                StatusCode = userUpdateLocationsResult.Code,
-                Data = userUpdateLocationsResult
-            };
-        }
 
         [Authorize]
-        [HttpDelete("/api/user/locations/{slug}")]
-        public async Task<IActionResult> UserDeleteLocation([FromRoute] UserDeleteLocationCommand request, CancellationToken cancellationToken)
+        [HttpPut("/api/user/deactivate")]
+        public async Task<IActionResult> UserDeleteLocation([FromRoute] UserDeactivateCommand request, CancellationToken cancellationToken)
         {
-            var userDeleteLocationResult = await _mediator.Send(request, cancellationToken);
+            var userDeactivationResult = await _mediator.Send(request, cancellationToken);
             return new CustomActionResult<BaseResponse>
             {
-                StatusCode = userDeleteLocationResult.Code,
-                Data = userDeleteLocationResult
+                StatusCode = userDeactivationResult.Code,
+                Data = userDeactivationResult
             };
         }
     }

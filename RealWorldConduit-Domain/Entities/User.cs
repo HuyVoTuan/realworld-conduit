@@ -11,8 +11,6 @@ namespace RealWorldConduit_Domain.Entities
         public string Password { get; set; }
         public string Bio { get; set; }
         public bool isActive { get; set; }
-        public Guid LocationId { get; set; }
-        public virtual Location Location { get; set; }
         public virtual ICollection<Blog> Blogs { get; set; }
         public virtual ICollection<Comment> Comments { get; set; }
         public virtual ICollection<FavoriteBlog> FavoriteBlogs { get; set; }

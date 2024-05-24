@@ -9,9 +9,9 @@ using System.Net;
 
 namespace RealWorldConduit_Application.Users.Queries
 {
-    public record GetSingleUserQuery(string Slug) : IRequestWithBaseResponse<UserDTO>;
+    public record GetSingleUserQuery(string Slug) : IRequestWithBaseResponse<MinimalUserDTO>;
 
-    internal class GetSingleUserQueryHandler : IRequestWithBaseResponseHandler<GetSingleUserQuery, UserDTO>
+    internal class GetSingleUserQueryHandler : IRequestWithBaseResponseHandler<GetSingleUserQuery, MinimalUserDTO>
     {
         private readonly ApplicationDbContext _dbContext;
         private readonly IStringLocalizer<GetSingleUserQueryHandler> _localizer;
@@ -21,10 +21,10 @@ namespace RealWorldConduit_Application.Users.Queries
             _localizer = localizer;
             _dbContext = dbContext;
         }
-        public async Task<BaseResponse<UserDTO>> Handle(GetSingleUserQuery request, CancellationToken cancellationToken)
+        public async Task<BaseResponse<MinimalUserDTO>> Handle(GetSingleUserQuery request, CancellationToken cancellationToken)
         {
             var userDTOQuery = await _dbContext.Users.AsNoTracking()
-                                                     .Select(x => new UserDTO
+                                                     .Select(x => new MinimalUserDTO
                                                      {
                                                          Slug = x.Slug,
                                                          Username = x.Username,
@@ -33,14 +33,6 @@ namespace RealWorldConduit_Application.Users.Queries
                                                          Bio = x.Bio,
                                                          CreatedDate = x.CreatedDate,
                                                          UpdatedDate = x.UpdatedDate,
-                                                         Locations = new LocationDTO
-                                                         {
-                                                             Address = x.Location.Address,
-                                                             District = x.Location.District,
-                                                             Ward = x.Location.Ward,
-                                                             City = x.Location.City,
-                                                             CountryCode = x.Location.CountryCode,
-                                                         }
                                                      })
                                                      .FirstOrDefaultAsync(x => x.Slug == request.Slug, cancellationToken);
 
@@ -50,7 +42,7 @@ namespace RealWorldConduit_Application.Users.Queries
                 throw new RestfulAPIException(HttpStatusCode.NotFound, _localizer.Translate("not_found", new List<string> { _localizer.Translate("user") }));
             }
 
-            return new BaseResponse<UserDTO>
+            return new BaseResponse<MinimalUserDTO>
             {
                 Code = HttpStatusCode.OK,
                 Message = _localizer.Translate("succesful.retrieve", new List<string> { _localizer.Translate("user") }),

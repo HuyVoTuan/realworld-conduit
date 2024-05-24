@@ -54,7 +54,8 @@ namespace RealWorldConduit_Application.Users.Commands
             var oldRefreshToken = await _dbContext.RefreshTokens.Include(x => x.User)
                                                                 .FirstOrDefaultAsync(x => x.RefreshTokenString == request.RefreshToken
                                                                                      && x.ExpiredTime > DateTime.UtcNow
-                                                                                     && x.UserId == _currentUser.Id,
+                                                                                     && x.UserId == _currentUser.Id
+                                                                                     && x.User.isActive == true,
                                                                                      cancellationToken);
 
 

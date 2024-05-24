@@ -59,7 +59,7 @@ namespace RealWorldConduit_Application.Users.Commands
         {
             var existingUser = await _dbContext.Users
                                               .AsNoTracking()
-                                              .FirstOrDefaultAsync(x => x.Email == request.Email, cancellationToken);
+                                              .FirstOrDefaultAsync(x => x.Email == request.Email && x.isActive == true, cancellationToken);
 
             if (existingUser is null || !_authService.VerifyPassword(request.Password, existingUser.Password))
             {

@@ -10,8 +10,8 @@ using System.Net;
 
 namespace RealWorldConduit_Application.Users.Queries
 {
-    public record GetCurrentUserQuery() : IRequestWithBaseResponse<UserDTO>;
-    internal class GetCurrentUserQueryHandler : IRequestWithBaseResponseHandler<GetCurrentUserQuery, UserDTO>
+    public record GetCurrentUserQuery() : IRequestWithBaseResponse<MinimalUserDTO>;
+    internal class GetCurrentUserQueryHandler : IRequestWithBaseResponseHandler<GetCurrentUserQuery, MinimalUserDTO>
     {
         private readonly ApplicationDbContext _dbContext;
         private readonly ICurrentUserService _currentUserService;
@@ -23,13 +23,12 @@ namespace RealWorldConduit_Application.Users.Queries
             _dbContext = dbContext;
             _currentUserService = currentUserService;
         }
-        public async Task<BaseResponse<UserDTO>> Handle(GetCurrentUserQuery request, CancellationToken cancellationToken)
+        public async Task<BaseResponse<MinimalUserDTO>> Handle(GetCurrentUserQuery request, CancellationToken cancellationToken)
         {
             var currentUser = await _dbContext.Users.AsNoTracking()
-                                                    .Include(x => x.Location)
                                                     .FirstOrDefaultAsync(x => x.Id == _currentUserService.Id, cancellationToken);
 
-            var currentUserDTO = new UserDTO
+            var currentUserDTO = new MinimalUserDTO
             {
                 Slug = currentUser.Slug,
                 Username = currentUser.Username,
@@ -38,17 +37,9 @@ namespace RealWorldConduit_Application.Users.Queries
                 Email = currentUser.Email,
                 CreatedDate = currentUser.CreatedDate,
                 UpdatedDate = currentUser.UpdatedDate,
-                Locations = new LocationDTO
-                {
-                    Slug = currentUser.Location.Slug,
-                    Address = currentUser.Location.Address,
-                    District = currentUser.Location.District,
-                    City = currentUser.Location.City,
-                    CountryCode = currentUser.Location.CountryCode,
-                }
             };
 
-            return new BaseResponse<UserDTO>
+            return new BaseResponse<MinimalUserDTO>
             {
                 Code = HttpStatusCode.OK,
                 Message = _localizer.Translate("successful.retrieve", new List<string> { _localizer.Translate("user") }),
