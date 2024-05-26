@@ -9,7 +9,5 @@ namespace RealWorldConduit_Domain.Entities
         public virtual User User { get; set; }
         public Guid BlogId { get; set; }
         public virtual Blog Blog { get; set; }
-        public Guid ParentCommentId { get; set; }
-        public virtual Comment ParentComment { get; set; }
     }
 }

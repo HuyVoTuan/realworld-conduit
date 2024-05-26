@@ -14,11 +14,11 @@ namespace RealWorldConduit_Infrastructure.EntityConfigs
             builder.HasKey(x => new { x.UserThatFollowId, x.UserBeingFollowedId });
 
             builder.HasOne(f => f.UserThatFollow)
-                   .WithMany(fl => fl.UserThatFollow)
+                   .WithMany(fl => fl.UsersThatFollow)
                    .HasForeignKey(f => f.UserThatFollowId);
 
             builder.HasOne(f => f.UserBeingFollowed)
-                   .WithMany(fl => fl.UserBeingFollowed)
+                   .WithMany(fl => fl.UsersBeingFollowed)
                    .HasForeignKey(f => f.UserBeingFollowedId);
         }
     }

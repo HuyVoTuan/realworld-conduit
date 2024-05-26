@@ -12,7 +12,7 @@ using System.Net;
 
 namespace RealWorldConduit_Application.Users.Commands
 {
-    public class UpdateUserDetailCommand : IRequestWithBaseResponse<MinimalUserDTO>
+    public class UserUpdateDetailCommand : IRequestWithBaseResponse<MinimalUserDTO>
     {
         public string AvatarUrl { get; init; }
         public string Email { get; init; }
@@ -21,12 +21,12 @@ namespace RealWorldConduit_Application.Users.Commands
         public string Bio { get; init; }
     };
 
-    public class UpdateUserDetailCommandValidator : AbstractValidator<UpdateUserDetailCommand>
+    public class UserUpdateDetailCommandValidator : AbstractValidator<UserUpdateDetailCommand>
     {
         private readonly ApplicationDbContext _dbContext;
-        private readonly IStringLocalizer<UpdateUserDetailCommandValidator> _localizer;
+        private readonly IStringLocalizer<UserUpdateDetailCommandValidator> _localizer;
 
-        public UpdateUserDetailCommandValidator(ApplicationDbContext dbContext, IStringLocalizer<UpdateUserDetailCommandValidator> localizer)
+        public UserUpdateDetailCommandValidator(ApplicationDbContext dbContext, IStringLocalizer<UserUpdateDetailCommandValidator> localizer)
         {
             _dbContext = dbContext;
             _localizer = localizer;
@@ -60,36 +60,35 @@ namespace RealWorldConduit_Application.Users.Commands
         }
     }
 
-    internal class UpdateUserDetailCommandHandler : IRequestWithBaseResponseHandler<UpdateUserDetailCommand, MinimalUserDTO>
+    internal class UserUpdateDetailCommandHandler : IRequestWithBaseResponseHandler<UserUpdateDetailCommand, MinimalUserDTO>
     {
         private readonly IAuthService _authService;
         private readonly ApplicationDbContext _dbContext;
-        private readonly ICurrentUserService _currentUserService;
-        private readonly IStringLocalizer<UpdateUserDetailCommandHandler> _localizer;
+        private readonly ICurrentUserService _currentUser;
+        private readonly IStringLocalizer<UserUpdateDetailCommandHandler> _localizer;
 
-        public UpdateUserDetailCommandHandler(
+        public UserUpdateDetailCommandHandler(
         IAuthService authService,
         ApplicationDbContext dbContext,
-        ICurrentUserService currentUserService,
-        IStringLocalizer<UpdateUserDetailCommandHandler> localizer)
+        ICurrentUserService currentUser,
+        IStringLocalizer<UserUpdateDetailCommandHandler> localizer)
         {
             _dbContext = dbContext;
             _localizer = localizer;
             _authService = authService;
-            _currentUserService = currentUserService;
+            _currentUser = currentUser;
         }
 
-        public async Task<BaseResponse<MinimalUserDTO>> Handle(UpdateUserDetailCommand request, CancellationToken cancellationToken)
+        public async Task<BaseResponse<MinimalUserDTO>> Handle(UserUpdateDetailCommand request, CancellationToken cancellationToken)
         {
-            var existingUser = await _dbContext.Users.FirstOrDefaultAsync(x => x.Id == _currentUserService.Id, cancellationToken);
-
+            var existingUser = await _dbContext.Users.FirstOrDefaultAsync(x => x.Id == _currentUser.Id, cancellationToken);
 
             // Prevent re-generated slug if username stay the same
-            var slug = StringHelper.GenerateSlug(request.Username);
+            var newSlug = StringHelper.GenerateSlug(request.Username);
 
-            if (!StringHelper.IsSlugContainFullname(slug, existingUser.Slug))
+            if (!StringHelper.IsSlugContainFullname(newSlug, existingUser.Slug))
             {
-                existingUser.Slug = slug;
+                existingUser.Slug = newSlug;
             }
 
             // Prevent re-hashed password if password stay the same => save performance
@@ -120,7 +119,7 @@ namespace RealWorldConduit_Application.Users.Commands
             return new BaseResponse<MinimalUserDTO>
             {
                 Code = HttpStatusCode.OK,
-                Message = _localizer.Translate("successful.update", new List<String> { "user" }),
+                Message = _localizer.Translate("successful.update", new List<string> { "user" }),
                 Data = userDTO
             };
         }

@@ -3,5 +3,6 @@
     public interface ICurrentUserService
     {
         public Guid? Id { get; }
+        public string? Slug { get; }
     }
 }

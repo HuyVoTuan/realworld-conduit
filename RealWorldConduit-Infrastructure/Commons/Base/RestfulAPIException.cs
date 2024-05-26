@@ -15,12 +15,6 @@ namespace RealWorldConduit_Infrastructure.Commons.Base
             _httpStatusCode = httpStatusCode;
         }
 
-        // Constructor for [Unauthorized], [NoContent], etc   
-        public RestfulAPIException(HttpStatusCode httpStatusCode)
-        {
-            _httpStatusCode = httpStatusCode;
-        }
-
         public override IDictionary Data => new Dictionary<string, int>()
         {
             {STATUS_CODE, (int)_httpStatusCode }

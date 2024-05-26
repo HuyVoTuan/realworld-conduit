@@ -16,6 +16,7 @@ namespace RealWorldConduit_Infrastructure
         public DbSet<Comment> Comments { get; set; }
         public DbSet<BlogTag> BlogTags { get; set; }
         public DbSet<Friendship> Friendships { get; set; }
+        public DbSet<FavoriteBlog> FavoriteBlogs { get; set; }
         public DbSet<RefreshToken> RefreshTokens { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)

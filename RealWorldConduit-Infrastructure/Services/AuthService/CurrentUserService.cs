@@ -15,14 +15,29 @@ namespace RealWorldConduit_Infrastructure.Services.Auth
         {
             get
             {
-                var memberId = _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-                bool isGuidParsed = Guid.TryParse(memberId, out Guid id);
+                var currentId = _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                bool isGuidParsed = Guid.TryParse(currentId, out Guid id);
 
-                if (memberId is null || !isGuidParsed)
+                if (currentId is null || !isGuidParsed)
                 {
                     return null;
                 }
                 return id;
+            }
+        }
+
+        public string? Slug
+        {
+            get
+            {
+                var currentSlug = _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.Name)?.Value;
+
+                if (String.IsNullOrEmpty(currentSlug))
+                {
+                    return null;
+                }
+
+                return currentSlug;
             }
         }
     }

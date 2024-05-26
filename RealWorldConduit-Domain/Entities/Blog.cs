@@ -6,6 +6,7 @@ namespace RealWorldConduit_Domain.Entities
     {
         public string Slug { get; set; }
         public string Title { get; set; }
+        public string Description { get; set; }
         public string Content { get; set; }
         public Guid AuthorId { get; set; }
         public virtual User Author { get; set; }

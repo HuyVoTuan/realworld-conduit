@@ -97,7 +97,7 @@ namespace RealWorldConduit_Application.Users.Commands
 
             if (cachedRefreshToken is null)
             {
-                throw new RestfulAPIException(HttpStatusCode.Unauthorized);
+                throw new RestfulAPIException(HttpStatusCode.Unauthorized, _localizer.Translate("unauthorized"));
             }
 
             return new BaseResponse<AuthResponseDTO>

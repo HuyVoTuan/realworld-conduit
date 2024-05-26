@@ -22,10 +22,6 @@ namespace RealWorldConduit_Infrastructure.EntityConfigs
             builder.HasOne(c => c.Blog)
                    .WithMany(b => b.Comments)
                    .HasForeignKey(c => c.BlogId);
-
-            builder.HasOne(c => c.ParentComment)
-                   .WithMany()
-                   .HasForeignKey(c => c.ParentCommentId);
         }
     }
 }

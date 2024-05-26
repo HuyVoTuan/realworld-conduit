@@ -15,7 +15,7 @@ namespace RealWorldConduit_Domain.Entities
         public virtual ICollection<Comment> Comments { get; set; }
         public virtual ICollection<FavoriteBlog> FavoriteBlogs { get; set; }
         public virtual ICollection<RefreshToken> RefreshTokens { get; set; }
-        public virtual ICollection<Friendship> UserThatFollow { get; set; }
-        public virtual ICollection<Friendship> UserBeingFollowed { get; set; }
+        public virtual ICollection<Friendship> UsersThatFollow { get; set; }
+        public virtual ICollection<Friendship> UsersBeingFollowed { get; set; }
     }
 }

@@ -58,8 +58,8 @@ namespace RealWorldConduit_Application.Users.Commands
         public async Task<BaseResponse<AuthResponseDTO>> Handle(UserLoginCommand request, CancellationToken cancellationToken)
         {
             var existingUser = await _dbContext.Users
-                                              .AsNoTracking()
-                                              .FirstOrDefaultAsync(x => x.Email == request.Email && x.isActive == true, cancellationToken);
+                                               .AsNoTracking()
+                                               .FirstOrDefaultAsync(x => x.Email == request.Email && x.isActive == true, cancellationToken);
 
             if (existingUser is null || !_authService.VerifyPassword(request.Password, existingUser.Password))
             {
